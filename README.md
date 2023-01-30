@@ -20,6 +20,9 @@
 git clone git@github.com:Aironsx/aerodisk_test.git
 ```
 ```
+cd aerodisk_test
+```
+```
 python3 -m venv env
 ```
 ```
