@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Список сетевых интерфейсов{% endblock %}
+{% block content %}
+<div class="row align-items-center justify-content-center mt-5">
+  <div class="col-sm-8 ">
+    <div class="container ">
+      <div class="card">
+        <div class="card-header">
+          {{ interface.name }}
+        </div>
+        <div class="card-body">
+          <div class="card-text mb-1">
+            <a href="{{ url_for ('network_interface.change_ip_address', interface_name=interface.name) }}" class="">Поменять Ip адрес - {{ interface.ip_address }} - сменить</a>
+          </div>
+          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.change_prefix', interface_name=interface.name) }}" class="">Поменять маску сети - {{ interface.mask }} - сменить</a></div>
+          {% if interface.is_enable == False %}
+          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.enable_network_interface', interface_name=interface.name) }}" class="">Включить интерфейс</a></div>
+          {% else %}
+          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.disable_network_interface', interface_name=interface.name) }}" class="">Выключить интерфейс</a></div>
+        {% endif %}
+        </div>
+      </div>
+      {% endblock %}
