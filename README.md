@@ -26,7 +26,7 @@ cd aerodisk_test
 python3 -m venv env
 ```
 ```
-source/venv/bin/activate
+source env/bin/activate
 ```
 ```
 python3 -m pip install --upgrade pip
