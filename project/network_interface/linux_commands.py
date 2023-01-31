@@ -1,6 +1,6 @@
 import abc
 import subprocess
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from project.config import Config
 
@@ -43,7 +43,10 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         self._execute_command(linux_command, sudo=True)
         self._validate_is_disable()
 
-    def change_ip_address(self, current_ip, new_ip_address, prefix):
+    def change_ip_address(self,
+                          current_ip: str,
+                          new_ip_address: str,
+                          prefix: str) -> None:
         linux_command_add = (
             f'sudo -S ip addr add {new_ip_address}/{prefix} dev '
             f'{self.network_interface.name}')
@@ -53,7 +56,10 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         self._execute_command(linux_command_del)
         self._validate_is_ip_changed(new_ip_address)
 
-    def change_prefix(self, ip_address, current_prefix, new_prefix):
+    def change_prefix(self,
+                      ip_address: str,
+                      current_prefix: str,
+                      new_prefix: str) -> None:
         linux_command_add = (
             f'sudo -S ip addr add {ip_address}/{new_prefix} dev '
             f'{self.network_interface.name}')
@@ -65,7 +71,8 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         self._validate_is_prefix_changed(new_prefix)
 
     @staticmethod
-    def _execute_command(linux_command: str, sudo: bool = False):
+    def _execute_command(linux_command: str,
+                         sudo: bool = False) -> Optional[str]:
         if sudo:
             process = subprocess.Popen(linux_command.split(),
                                        stdin=subprocess.PIPE,
@@ -90,7 +97,7 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         if self._execute_command(linux_command):
             raise ValueError(f'{self.network_interface.name} not disabled')
 
-    def _validate_is_ip_changed(self, ip_address):
+    def _validate_is_ip_changed(self, ip_address: str) -> None:
         IP_ADDRESS_WITH_MASK = 2
         IP_ADDRESS = 0
 
@@ -104,7 +111,7 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
             raise ValueError(f'{self.network_interface.ip_address} not '
                              f'changed')
 
-    def _validate_is_prefix_changed(self, prefix):
+    def _validate_is_prefix_changed(self, prefix: str) -> None:
         IP_ADDRESS_WITH_MASK = 2
         PREFIX = 1
 
@@ -129,7 +136,7 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
             yield name.rstrip()
 
     @staticmethod
-    def get_interface_data(name):
+    def get_interface_data(name: str) -> str:
         linux_command = f'ip -4 -brief address show {name}'
         result = subprocess.run(linux_command.split(),
                                 capture_output=True,
@@ -137,7 +144,7 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         return result.stdout.rstrip()
 
     @staticmethod
-    def get_availability_status(name):
+    def get_availability_status(name: str) -> bool:
         linux_command = f'ip a show {name} up'
         result = subprocess.run(linux_command.split(),
                                 capture_output=True,

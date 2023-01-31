@@ -16,7 +16,7 @@ class NetworkInterface:
         self.__linux_command = None
 
     @property
-    def linux_commands(self):
+    def linux_commands(self) -> linux_commands.LinuxCommandNetworkInterface:
         if self.__linux_command is None:
             self.__linux_command = (
                 linux_commands.LinuxCommandNetworkInterface(self)
@@ -35,7 +35,7 @@ class NetworkInterface:
         self.linux_commands.disable_network_interface()
         self._write_to_db('is_enable', False)
 
-    def change_ip_address(self, ip_address):
+    def change_ip_address(self, ip_address: str) -> None:
         if not self._is_enabled():
             raise ValueError(f'{self} is disabled')
         self.linux_commands.change_ip_address(current_ip=self.ip_address,
@@ -44,7 +44,7 @@ class NetworkInterface:
         self._set_attrs('ip_address', ip_address)
         self._write_to_db('ip_address', ip_address)
 
-    def change_prefix(self, prefix):
+    def change_prefix(self, prefix: str) -> None:
         if not self._is_enabled():
             raise ValueError(f'{self} is disabled')
         self.linux_commands.change_prefix(ip_address=self.ip_address,
