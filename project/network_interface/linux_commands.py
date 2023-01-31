@@ -122,19 +122,27 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         else:
             raise ValueError('No mask set')
 
+    @staticmethod
+    def get_network_interface_names():
+        linux_command = 'ls /sys/class/net'
+        result = subprocess.run(linux_command.split(),
+                                capture_output=True,
+                                text=True)
+        for name in result.stdout.split():
+            yield name.rstrip()
 
-def get_network_interface_names():
-    linux_command = 'ls /sys/class/net'
-    result = subprocess.run(linux_command.split(),
-                            capture_output=True,
-                            text=True)
-    for name in result.stdout.split():
-        yield name.rstrip()
+    @staticmethod
+    def get_interface_data(name):
+        linux_command = f'ip -4 -brief address show {name}'
+        result = subprocess.run(linux_command.split(),
+                                capture_output=True,
+                                text=True)
+        return result.stdout.rstrip()
 
-
-def get_interface_data(name):
-    linux_command = f'ip -4 -brief address show {name}'
-    result = subprocess.run(linux_command.split(),
-                            capture_output=True,
-                            text=True)
-    return result.stdout.rstrip()
+    @staticmethod
+    def get_availability_status(name):
+        linux_command = f'ip a show {name} up'
+        result = subprocess.run(linux_command.split(),
+                                capture_output=True,
+                                text=True)
+        return bool(result.stdout)

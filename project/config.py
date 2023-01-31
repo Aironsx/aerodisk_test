@@ -9,6 +9,6 @@ load_dotenv()
 class Config:
     DEBUG = True
     SUDO_PASSWORD = os.getenv('SUDO_PASSWORD')
-    SECRET_KEY = os.getenv('SECRET_key')
+    SECRET_KEY = os.getenv('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

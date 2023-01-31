@@ -16,7 +16,7 @@ network_interface = Blueprint('network_interface',
 @login_required
 def list_network_interfaces():
     data = NetworkInterfaceSelector().get_network_interfaces()
-    return render_template('network_interface/list_network_interface.html',
+    return render_template('network_interface/list_network_interfaces.html',
                            data=data)
 
 

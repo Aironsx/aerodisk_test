@@ -74,9 +74,14 @@ class NetworkInterface:
 
 class InitNetworkInterfaces:
     def init_existing_network_interfaces(self):
-        for name in linux_commands.get_network_interface_names():
-            if data := linux_commands.get_interface_data(name):
+        linux_command = linux_commands.LinuxCommandNetworkInterface
+        for name in linux_command.get_network_interface_names():
+            if data := linux_command.get_interface_data(name):
                 clear_data = self._get_clear_data(data)
+                is_enable = linux_command.get_availability_status(
+                    clear_data['name']
+                )
+                clear_data.update({'is_enable': is_enable})
                 obj = (models.NetworkInterface(**clear_data))
                 db.session.add(obj)
         db.session.flush()
@@ -84,12 +89,7 @@ class InitNetworkInterfaces:
 
     @staticmethod
     def _get_clear_data(data):
-        ENABLE_STATE = {
-            'UP': True,
-            'DOWN': False,
-            'UNKNOWN': False
-        }
-        name, is_enable, ip_address_with_prefix = data.split()
+        name, _, ip_address_with_prefix = data.split()
         ip_address, prefix = ip_address_with_prefix.split('/')
         validator = IpAddressValidator()
         ip_type = (
@@ -101,5 +101,4 @@ class InitNetworkInterfaces:
             'ip_address': ip_address,
             'ip_type': ip_type,
             'prefix': prefix,
-            'is_enable': ENABLE_STATE[is_enable]
         }

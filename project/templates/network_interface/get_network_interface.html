@@ -1,23 +1,48 @@
 {% extends 'base.html' %}
 {% block title %}Список сетевых интерфейсов{% endblock %}
 {% block content %}
-<div class="row align-items-center justify-content-center mt-5">
-  <div class="col-sm-8 ">
-    <div class="container ">
-      <div class="card">
-        <div class="card-header">
-          {{ interface.name }}
-        </div>
-        <div class="card-body">
-          <div class="card-text mb-1">
-            <a href="{{ url_for ('network_interface.change_ip_address', interface_name=interface.name) }}" class="">Поменять Ip адрес - {{ interface.ip_address }} - сменить</a>
-          </div>
-          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.change_prefix', interface_name=interface.name) }}" class="">Поменять маску сети - {{ interface.mask }} - сменить</a></div>
-          {% if interface.is_enable == False %}
-          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.enable_network_interface', interface_name=interface.name) }}" class="">Включить интерфейс</a></div>
-          {% else %}
-          <div class="card-text mb-1"><a href="{{ url_for ('network_interface.disable_network_interface', interface_name=interface.name) }}" class="">Выключить интерфейс</a></div>
+
+<h2 class="mb-4 pb-3">Сетевой интерфейс {{ interface.name }}</h2>
+<div class="card me-3 mb-3">
+  <div class="card-body">
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Параметр</th>
+          <th scope="col">Значение</th>
+          <th scope="col">Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row">Ip адрес</th>
+          <td>{{ interface.ip_address }}</td>
+          <td><a href="{{ url_for ('network_interface.change_ip_address', interface_name=interface.name) }}" class="btn btn-dark text-truncate">Изменить</a></td>
+        </tr>
+        <tr>
+          <th scope="row">Префикс</th>
+          <td>{{ interface.prefix }}</td>
+          <td><a href="{{ url_for ('network_interface.change_prefix', interface_name=interface.name) }}" class="btn btn-dark text-truncate">Изменить</a></td>
+        </tr>
+        {% if interface.is_enable %}
+        <tr>
+          <th scope="row">Состояние</th>
+          <th scope="row">Включен</th>
+          <td><a href="{{ url_for ('network_interface.disable_network_interface', interface_name=interface.name) }}" class="btn btn-dark text-truncate">Выключить</a></td>
+        </tr>
+        {% else %}
+        <tr>
+          <th scope="row">Состояние</th>
+          <th scope="row">Выключен</th>
+          <td><a href="{{ url_for ('network_interface.enable_network_interface', interface_name=interface.name) }}" class="btn btn-dark text-truncate">Включить</a></td>
+        </tr>
         {% endif %}
-        </div>
-      </div>
-      {% endblock %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

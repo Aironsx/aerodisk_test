@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Список сетевых интерфейсов{% endblock %}
+{% block content %}
+
+<h2 class="mb-4 pb-3">Список сетевых интерфейсов</h2>
+<div class="card me-3 mb-3">
+  <div class="card-body">
+    {% if not data%}
+    <div class="card  my-lg-4">
+      <div class="card-header justify-content-center">
+        Создать базовые интерефесы
+        <a href="{{ url_for ('network_interface.create_network_interfaces') }}" class="button btn btn-dark float-end">Создать</a>
+      </div>
+      {% else %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Имя интерфейса</th>
+            <th scope="col">Iз адрес</th>
+            <th scope="col">Префикс</th>
+            <th scope="col">Состояние</th>
+            <th scope="col">Действие</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for portion in data %}
+          <tr>
+            <th scope="row">{{ portion.name }}</th>
+            <td>{{ portion.ip_address }}</td>
+            <td>{{ portion.prefix }}</td>
+            {% if portion.is_enable %}
+            <td> Включен </td>
+            {% else %}
+            <td> Выключен </td>
+            {% endif %}
+            <td><a href="{{ url_for ('network_interface.get_network_interface', interface_name=portion.name) }}" class="btn btn-dark text-truncate">Изменить</a></td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endblock %}
