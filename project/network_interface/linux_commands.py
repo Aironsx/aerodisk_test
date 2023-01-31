@@ -85,7 +85,8 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
             raise ValueError(f'{self.network_interface.name} not enabled')
 
     def _validate_is_disable(self) -> None:
-        linux_command = f'ip a show {self.network_interface.name} up'
+        linux_command = (f'ip -4 -brief address show'
+                         f' {self.network_interface.name} up')
         if self._execute_command(linux_command):
             raise ValueError(f'{self.network_interface.name} not disabled')
 
@@ -102,8 +103,6 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
         if current_ip_address != ip_address:
             raise ValueError(f'{self.network_interface.ip_address} not '
                              f'changed')
-        else:
-            raise ValueError('No ip address set')
 
     def _validate_is_prefix_changed(self, prefix):
         IP_ADDRESS_WITH_MASK = 2
@@ -119,8 +118,6 @@ class LinuxCommandNetworkInterface(AbstractLinuxCommandNetworkInterface):
             if current_prefix != prefix:
                 raise ValueError(f'{self.network_interface.prefix} not '
                                  'changed')
-        else:
-            raise ValueError('No mask set')
 
     @staticmethod
     def get_network_interface_names():
